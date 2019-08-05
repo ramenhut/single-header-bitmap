@@ -1,5 +1,5 @@
 ## Single header bitmap (bmp) reading/writing
-Simple single-header-only implementation of both reading and writing Microsoft bitmap (.bmp) files. I've used this *in some form* across many of my graphics projects dating back to 1998 because it enables an easy way to dump visual data to a file for later analysis in a more sophisticated tool (*e.g. Photoshop*). 
+Simple single-header-only implementation of both reading and writing Microsoft bitmap (.bmp) files. I've used this *in some form* across many of my graphics projects dating back to 1998 because it enables an easy way to dump visual data to a file for later analysis in a more sophisticated tool. 
 
 Note, this implementation only supports one particular (albeit the most common) data format: **RGB24**. This is *not* a comprehensive implementation of the bitmap format!
 
