@@ -18,7 +18,7 @@ Note, this implementation only supports one particular (albeit the most common) 
   /* Image loaded with dimensions stored src_width and src_height. */
 
   /* Save our image back out to a bitmap file. */
-  if (!SaveBitmapImage(dst_filename, &src_image, src_width, src_height)) {
+  if (!SaveBitmapImage("output.bmp", &src_image, src_width, src_height)) {
     /* handle bitmap write error. */
     return 0;
   }
