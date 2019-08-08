@@ -120,8 +120,8 @@ inline uint32 greater_multiple(uint32 value, uint32 multiple) {
 }
 
 /* Loads a 24 bit RGB bitmap file into a vector. */
-bool LoadBitmapImage(const string &filename, vector<uint8> *output,
-                     uint32 *width, uint32 *height, string *error = nullptr) {
+bool LoadBitmapImage(const string& filename, vector<uint8>* output,
+                     uint32* width, uint32* height, string* error = nullptr) {
   if (filename.empty() || !output) {
     if (error) {
       *error = "Invalid inputs to LoadBitmapImage.";
@@ -135,14 +135,14 @@ bool LoadBitmapImage(const string &filename, vector<uint8> *output,
 
   ifstream input_file(filename, ::std::ios::in | ::std::ios::binary);
 
-  if (!input_file.read((char *)&bmf_header, sizeof(PTCX_BITMAP_FILE_HEADER))) {
+  if (!input_file.read((char*)&bmf_header, sizeof(PTCX_BITMAP_FILE_HEADER))) {
     if (error) {
       *error = "Failed to read bitmap file header";
     }
     return false;
   }
 
-  if (!input_file.read((char *)&bih, sizeof(PTCX_BITMAP_INFO_HEADER))) {
+  if (!input_file.read((char*)&bih, sizeof(PTCX_BITMAP_INFO_HEADER))) {
     if (error) {
       *error = "Failed to read bitmap info header.\n";
     }
@@ -172,9 +172,9 @@ bool LoadBitmapImage(const string &filename, vector<uint8> *output,
 
   for (uint32 i = 0; i < bih.height; i++) {
     uint32 y_offset = i * row_stride;
-    uint8 *dest_row = &output->at(y_offset);
+    uint8* dest_row = &output->at(y_offset);
 
-    if (!input_file.read((char *)dest_row, row_stride)) {
+    if (!input_file.read((char*)dest_row, row_stride)) {
       if (error) {
         *error = "Abrupt error reading file.\n";
       }
@@ -182,7 +182,7 @@ bool LoadBitmapImage(const string &filename, vector<uint8> *output,
     }
 
     uint32 dummy = 0; /* Padding will always be < 4 bytes. */
-    if (!input_file.read((char *)&dummy, scanline_padding)) {
+    if (!input_file.read((char*)&dummy, scanline_padding)) {
       if (error) {
         *error = "Abrupt error reading file.\n";
       }
@@ -201,8 +201,8 @@ bool LoadBitmapImage(const string &filename, vector<uint8> *output,
   return true;
 }
 
-bool SaveBitmapImage(const string &filename, vector<uint8> *input, uint32 width,
-                     uint32 height, string *error = nullptr) {
+bool SaveBitmapImage(const string& filename, vector<uint8>* input, uint32 width,
+                     uint32 height, string* error = nullptr) {
   if (filename.empty() || input->empty()) {
     if (error) {
       *error = "Invalid inputs to SaveBitmapImage.";
@@ -233,15 +233,14 @@ bool SaveBitmapImage(const string &filename, vector<uint8> *input, uint32 width,
 
   ofstream output_file(filename, ::std::ios::out | ::std::ios::binary);
 
-  if (!output_file.write((char *)&bmf_header,
-                         sizeof(PTCX_BITMAP_FILE_HEADER))) {
+  if (!output_file.write((char*)&bmf_header, sizeof(PTCX_BITMAP_FILE_HEADER))) {
     if (error) {
       *error = "Failed to write bitmap file header";
     }
     return false;
   }
 
-  if (!output_file.write((char *)&bih, sizeof(PTCX_BITMAP_INFO_HEADER))) {
+  if (!output_file.write((char*)&bih, sizeof(PTCX_BITMAP_INFO_HEADER))) {
     if (error) {
       *error = "Failed to write bitmap info header.\n";
     }
@@ -250,20 +249,16 @@ bool SaveBitmapImage(const string &filename, vector<uint8> *input, uint32 width,
 
   uint32 image_row_pitch = bih.width * 3;
   uint32 image_size = image_row_pitch * bih.height;
+  uint32 row_stride = bih.width * 3;
 
   /* The BMP format requires each scanline to be 32 bit aligned, so we insert
      padding if necessary. */
   uint32 scanline_padding =
       greater_multiple(bih.width * 3, 4) - (bih.width * 3);
 
-  ::std::vector<uint8> one_texel_row;
-  one_texel_row.resize(image_row_pitch);
-  uint8 *row_ptr = &one_texel_row.at(0);
-  uint32 row_stride = bih.width * 3;
-
   for (uint32 i = 0; i < bih.height; i++) {
     uint32 y_offset = i * row_stride;
-    uint8 *src_row = &input->at(y_offset);
+    uint8* src_row = &input->at(y_offset);
 
     /* Swap the R and B channels (as BMP stores its data in BGR). */
     for (uint32 j = 0; j < bih.width; j++) {
@@ -273,7 +268,7 @@ bool SaveBitmapImage(const string &filename, vector<uint8> *input, uint32 width,
       input->at(x_offset + 2) = temp_channel;
     }
 
-    if (!output_file.write((char *)src_row, row_stride)) {
+    if (!output_file.write((char*)src_row, row_stride)) {
       if (error) {
         *error = "Abrupt error writing file.\n";
       }
@@ -281,7 +276,7 @@ bool SaveBitmapImage(const string &filename, vector<uint8> *input, uint32 width,
     }
 
     uint32 dummy = 0; /* Padding will always be < 4 bytes. */
-    if (!output_file.write((char *)&dummy, scanline_padding)) {
+    if (!output_file.write((char*)&dummy, scanline_padding)) {
       if (error) {
         *error = "Abrupt error writing file.\n";
       }
